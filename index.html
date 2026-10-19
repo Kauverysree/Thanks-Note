@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<title>Four Years of Thanks</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: one fixed-height stage; four scenes (welcome → number game → desk picks → closing note) swap in place, each sized to fit a single screen. */
+:root{
+  --ivory:#FBF7F0;
+  --cream:#F5EDDF;
+  --beige:#E7DCC7;
+  --wood:#D9C3A5;
+  --wood-deep:#B9996F;
+  --sage:#9DB89A;
+  --sage-deep:#5F7D5B;
+  --sage-soft:#DDE8D8;
+  --peach:#F4CBB8;
+  --peach-deep:#DB9A7E;
+  --lilac:#E3DDF2;
+  --sky:#D9E6F2;
+  --ink:#3E463B;
+  --ink-soft:#6F776B;
+  --card:#FFFDF9;
+  --shadow:0 14px 30px -14px rgba(95,125,91,.35);
+  --hand:"Caveat","Segoe Script","Bradley Hand",cursive;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--ivory);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;overflow:hidden;
+  background-image:radial-gradient(70% 55% at 0% 0%,rgba(221,232,216,.8) 0,transparent 70%),radial-gradient(55% 45% at 100% 20%,rgba(244,203,184,.5) 0,transparent 70%)}
+button{font-family:inherit;cursor:pointer;color:inherit}
+button:focus-visible{outline:3px solid var(--sage);outline-offset:3px}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
+#stage{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;overflow:hidden}
+.scene{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(10px,2vh,22px);text-align:center;
+  padding-block:clamp(10px,2vh,24px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  animation:fadeUp .6s ease both;overflow:auto;width:100%}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.scene.leaving{animation:fadeOut .3s ease both}
+@keyframes fadeOut{to{opacity:0;transform:translateY(-10px)}}
+
+.hand{font-family:var(--hand);font-weight:700;color:var(--sage-deep);line-height:.95;margin:0}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--beige);border-radius:999px;padding:6px 14px;font-size:.85rem;font-weight:700;color:var(--ink-soft);box-shadow:var(--shadow)}
+.chip b{color:var(--sage-deep)}
+.btn{border:0;border-radius:999px;padding:13px 26px;font-size:1rem;font-weight:800;background:var(--sage-deep);color:#fff;box-shadow:0 10px 22px -10px rgba(95,125,91,.8);
+  transition:transform .2s,box-shadow .2s,background .2s;min-height:48px;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{transform:translateY(-2px)}
+.btn.peach{background:var(--peach-deep)}
+.btn.ghost{background:transparent;color:var(--sage-deep);box-shadow:none;border:2px solid var(--sage)}
+.btn.ghost:hover{background:var(--sage-soft)}
+.btn:disabled{opacity:.6;cursor:default;transform:none}
+.sub{margin:0;color:var(--ink-soft);max-width:46ch;font-size:clamp(.95rem,1.8vh,1.1rem)}
+.q{margin:0;font-weight:800;font-size:clamp(1.15rem,2.6vh,1.5rem);max-width:30ch;text-wrap:balance}
+
+/* ---- Welcome ---- */
+.welcome{flex-direction:row;gap:clamp(14px,4vw,48px);justify-content:center;text-align:left;align-items:center}
+.welcome .text{display:flex;flex-direction:column;gap:clamp(8px,1.6vh,16px);align-items:flex-start;max-width:520px;flex:1 1 300px}
+.welcome .hand{font-size:clamp(3.4rem,9vh,6.4rem)}
+.welcome .tag{font-size:clamp(1.15rem,2.6vh,1.6rem);font-weight:700;line-height:1.25;margin:0}
+.welcome .tag mark{background:linear-gradient(transparent 55%,var(--peach) 55%);color:inherit;padding:0 2px}
+.desk{flex:0 1 420px;width:100%;max-width:440px;aspect-ratio:4/3;max-height:52vh;display:flex;align-items:flex-end;justify-content:center}
+.desk svg{width:100%;height:100%;overflow:visible}
+.quoteframe{font-family:var(--hand);font-weight:700}
+
+/* ---- Number game ---- */
+.numbers{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(8px,1.5vh,14px);width:min(100%,460px)}
+.numbers button{aspect-ratio:1;border:2px solid var(--beige);border-radius:18px;background:var(--card);font-size:clamp(1.4rem,3.6vh,2.1rem);font-weight:800;color:var(--ink);box-shadow:var(--shadow);transition:transform .15s,background .2s,border-color .2s}
+.numbers button:hover{transform:translateY(-3px);border-color:var(--sage)}
+.numbers button.wrong{background:var(--peach);border-color:var(--peach-deep);animation:shake .4s}
+.numbers button.right{background:var(--sage-deep);color:#fff;border-color:var(--sage-deep);transform:scale(1.08)}
+.numbers button.hint{animation:pulse 1.2s ease-in-out infinite;border-color:var(--sage-deep)}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(95,125,91,.5)}50%{box-shadow:0 0 0 10px rgba(95,125,91,0)}}
+.reply{min-height:3.2em;margin:0;font-size:clamp(1rem,2.2vh,1.2rem);font-weight:700;color:var(--peach-deep);max-width:44ch;transition:color .3s}
+.reply.ok{color:var(--sage-deep)}
+.reply .big{font-family:var(--hand);font-size:1.6em;display:block;color:var(--sage-deep);line-height:1}
+
+/* ---- Desk picks ---- */
+.picks{position:relative;width:min(100%,900px);display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(8px,1.4vw,18px);padding-top:clamp(6px,1.5vh,16px)}
+.picks .path{position:absolute;left:4%;right:4%;top:-4px;height:30px;pointer-events:none}
+.picks .path path{fill:none;stroke:var(--sage);stroke-width:2.5;stroke-dasharray:7 7;opacity:.7}
+.pick{border:0;border-radius:24px;background:var(--card);box-shadow:var(--shadow);padding:clamp(10px,1.8vh,18px) 8px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:transform .25s,box-shadow .25s;position:relative}
+.pick:hover{transform:translateY(-6px) rotate(-1deg)}
+.pick .obj{width:clamp(56px,11vh,96px);height:clamp(56px,11vh,96px);border-radius:50%;display:grid;place-items:center;background:var(--sage-soft)}
+.pick:nth-child(2) .obj{background:var(--peach)}.pick:nth-child(3) .obj{background:var(--sky)}.pick:nth-child(4) .obj{background:var(--lilac)}.pick:nth-child(5) .obj{background:var(--cream)}
+.pick .obj svg{width:62%;height:62%}
+.pick b{font-size:clamp(.85rem,1.9vh,1.05rem)}
+.pick small{font-size:.74rem;color:var(--ink-soft);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.pick.seen{background:var(--sage-soft)}
+.pick.seen::after{content:"✓";position:absolute;top:8px;right:10px;width:22px;height:22px;border-radius:50%;background:var(--sage-deep);color:#fff;font-size:.8rem;font-weight:800;display:grid;place-items:center}
+.pick.seen small{color:var(--sage-deep)}
+.progress{display:flex;align-items:center;gap:10px;color:var(--ink-soft);font-size:.9rem;font-weight:700}
+.progress i{width:9px;height:9px;border-radius:50%;background:var(--beige);display:block;transition:background .3s}
+.progress i.on{background:var(--sage-deep)}
+
+/* ---- Modal ---- */
+.modal{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding-block:16px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:rgba(62,70,59,.38);backdrop-filter:blur(6px);animation:fadeIn .25s both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal.closing{animation:fadeOut .22s both}
+.sheet{position:relative;width:100%;max-width:520px;max-height:100%;overflow:auto;background:var(--card);border-radius:28px;padding:clamp(22px,4vh,38px) clamp(18px,4vw,34px);
+  box-shadow:0 40px 80px -30px rgba(62,70,59,.5);text-align:center;animation:pop .4s cubic-bezier(.2,.9,.3,1.2) both;display:flex;flex-direction:column;align-items:center;gap:10px}
+@keyframes pop{from{transform:scale(.86) translateY(16px);opacity:0}to{transform:none;opacity:1}}
+.sheet .ico{width:clamp(64px,10vh,88px);height:clamp(64px,10vh,88px);border-radius:50%;display:grid;place-items:center;background:var(--sage-soft)}
+.sheet .ico svg{width:58%;height:58%}
+.sheet .kicker{font-family:var(--hand);font-size:1.35rem;color:var(--peach-deep);line-height:1;margin:0}
+.sheet h3{margin:0;font-size:clamp(1.6rem,3.6vh,2.1rem);font-weight:800}
+.sheet .lead{margin:0;font-weight:700;color:var(--sage-deep);font-size:clamp(1rem,2.1vh,1.15rem)}
+.sheet .body{margin:0 0 8px;color:var(--ink-soft);max-width:44ch;font-size:clamp(.92rem,1.9vh,1rem)}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ---- Closing note ---- */
+.note{width:min(100%,640px);background:var(--card);border-radius:22px;padding:clamp(18px,3.5vh,36px) clamp(18px,4vw,44px);box-shadow:var(--shadow);text-align:left;position:relative;
+  background-image:repeating-linear-gradient(0deg,transparent 0 29px,rgba(157,184,154,.22) 29px 30px);background-position:0 6px}
+.note::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;border-radius:22px 0 0 22px;background:linear-gradient(var(--peach),var(--sage))}
+.note .greet{font-family:var(--hand);font-size:clamp(1.6rem,3.6vh,2.1rem);color:var(--sage-deep);margin:0 0 6px;font-weight:700}
+.note p{margin:0 0 12px;font-size:clamp(.95rem,2vh,1.12rem);line-height:1.65;max-width:62ch}
+.note .sign{font-family:var(--hand);font-size:clamp(1.4rem,3vh,1.8rem);color:var(--peach-deep);margin:0;text-align:right;font-weight:700}
+.note .stamp{position:absolute;right:16px;top:12px;padding:6px 10px;border:2px dashed var(--peach-deep);border-radius:12px;font-family:var(--hand);color:var(--peach-deep);font-size:1.05rem;transform:rotate(8deg);line-height:1.05;text-align:center;background:rgba(244,203,184,.25);font-weight:700}
+.closing{margin:0;font-weight:800;color:var(--sage-deep);font-size:clamp(1rem,2.2vh,1.25rem);max-width:44ch}
+
+@media (max-width:760px){
+  .welcome{flex-direction:column;text-align:center}
+  .welcome .text{align-items:center;flex:0 0 auto}
+  .desk{flex:0 1 auto;max-height:34vh;max-width:360px}
+  .picks{grid-template-columns:repeat(3,1fr);gap:10px}
+  .picks .path{display:none}
+}
+@media (max-width:420px){
+  .picks{grid-template-columns:repeat(3,1fr)}
+  .pick{border-radius:18px;padding:10px 6px}
+  .pick .obj{width:50px;height:50px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+
+<canvas id="confetti" aria-hidden="true"></canvas>
+<main id="stage"></main>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- corporate icons (modal) -->
+    <symbol id="i-learning" viewBox="0 0 48 48"><path d="M8 12c6-3 11-3 16 0v24c-5-3-10-3-16 0z" fill="#fff" stroke="#5F7D5B" stroke-width="2.2" stroke-linejoin="round"/><path d="M40 12c-6-3-11-3-16 0v24c5-3 10-3 16 0z" fill="#fff" stroke="#5F7D5B" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 19h8M12 25h8M28 19h8M28 25h8" stroke="#9DB89A" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-growth" viewBox="0 0 48 48"><path d="M8 38h32" stroke="#5F7D5B" stroke-width="2.2" stroke-linecap="round"/><path d="M12 30l8-8 6 6 12-12" fill="none" stroke="#5F7D5B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M30 16h8v8" fill="none" stroke="#5F7D5B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="12" y="32" width="5" height="6" rx="1" fill="#9DB89A"/><rect x="21" y="28" width="5" height="10" rx="1" fill="#9DB89A"/><rect x="30" y="24" width="5" height="14" rx="1" fill="#9DB89A"/></symbol>
+    <symbol id="i-support" viewBox="0 0 48 48"><circle cx="17" cy="16" r="6" fill="#fff" stroke="#5F7D5B" stroke-width="2.2"/><circle cx="32" cy="18" r="5" fill="#fff" stroke="#5F7D5B" stroke-width="2.2"/><path d="M6 38c0-7 5-11 11-11s11 4 11 11z" fill="#9DB89A" stroke="#5F7D5B" stroke-width="2.2" stroke-linejoin="round"/><path d="M28 38c0-6 3-9 8-9s7 3 7 9z" fill="#fff" stroke="#5F7D5B" stroke-width="2.2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-confidence" viewBox="0 0 48 48"><path d="M24 6l5 10 11 1-8 8 2 11-10-5-10 5 2-11-8-8 11-1z" fill="#fff" stroke="#5F7D5B" stroke-width="2.2" stroke-linejoin="round"/><path d="M19 24l4 4 7-8" fill="none" stroke="#5F7D5B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-inspiration" viewBox="0 0 48 48"><path d="M24 6c-8 0-13 6-13 13 0 6 4 8 6 12h14c2-4 6-6 6-12 0-7-5-13-13-13z" fill="#fff" stroke="#5F7D5B" stroke-width="2.2"/><path d="M19 35h10M20 39h8" stroke="#5F7D5B" stroke-width="2.2" stroke-linecap="round"/><path d="M20 20l4 4 5-7" fill="none" stroke="#DB9A7E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <!-- desk objects (picks) -->
+    <symbol id="o-mug" viewBox="0 0 48 48"><path d="M10 16h24v14a8 8 0 0 1-8 8h-8a8 8 0 0 1-8-8z" fill="#fff" stroke="#5F7D5B" stroke-width="2.2"/><path d="M34 20h3a5 5 0 0 1 0 10h-3" fill="none" stroke="#5F7D5B" stroke-width="2.2"/><path d="M17 9c0 3 2 3 2 6M23 7c0 3 2 3 2 6" stroke="#DB9A7E" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M10 40h28" stroke="#5F7D5B" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="o-notebook" viewBox="0 0 48 48"><rect x="12" y="8" width="26" height="32" rx="4" fill="#fff" stroke="#5F7D5B" stroke-width="2.2"/><path d="M9 14h6M9 20h6M9 26h6M9 32h6" stroke="#5F7D5B" stroke-width="2.2" stroke-linecap="round"/><path d="M20 18h12M20 24h12M20 30h8" stroke="#9DB89A" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="o-plant" viewBox="0 0 48 48"><path d="M14 30h20l-2 10H16z" fill="#fff" stroke="#5F7D5B" stroke-width="2.2" stroke-linejoin="round"/><path d="M24 30V18" stroke="#5F7D5B" stroke-width="2.2" stroke-linecap="round"/><path d="M24 24c-8 0-12-5-13-11 7-1 13 3 13 11z" fill="#9DB89A" stroke="#5F7D5B" stroke-width="1.8"/><path d="M24 20c0-8 5-12 12-13 1 8-4 13-12 13z" fill="#DDE8D8" stroke="#5F7D5B" stroke-width="1.8"/></symbol>
+    <symbol id="o-trophy" viewBox="0 0 48 48"><path d="M16 8h16v10a8 8 0 0 1-16 0z" fill="#fff" stroke="#5F7D5B" stroke-width="2.2"/><path d="M16 11h-5a5 5 0 0 0 5 8M32 11h5a5 5 0 0 1-5 8" fill="none" stroke="#5F7D5B" stroke-width="2.2"/><path d="M24 26v6M17 38h14M20 32h8v6h-8z" stroke="#5F7D5B" stroke-width="2.2" stroke-linejoin="round" fill="#DB9A7E"/></symbol>
+    <symbol id="o-lamp" viewBox="0 0 48 48"><path d="M14 10h16l6 14H8z" fill="#fff" stroke="#5F7D5B" stroke-width="2.2" stroke-linejoin="round"/><path d="M22 24v12M14 40h16" stroke="#5F7D5B" stroke-width="2.2" stroke-linecap="round"/><path d="M12 30l-3 4M32 30l3 4M22 28v5" stroke="#DB9A7E" stroke-width="2" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<script>
+(function(){
+  var stage=document.getElementById('stage');
+  var BOSS='Surendiran', COMPANY='Pinesphere', YEARS=4;
+  var PICKS=[
+    {key:'mug',obj:'o-mug',label:'Coffee mug',icon:'i-support',title:'Support',lead:'Thank you for your patience, feedback, and encouragement.',
+     body:'Like the first coffee of the day, your support was always there. Honest feedback, a patient ear on hard days, and encouragement at exactly the right moment.'},
+    {key:'notebook',obj:'o-notebook',label:'Notebook',icon:'i-learning',title:'Learning',lead:'Thank you for teaching me and sharing your knowledge.',
+     body:'Every page of my notebook from these four years has something you taught me. You never made a question feel small, and you showed me better ways to work.'},
+    {key:'plant',obj:'o-plant',label:'Desk plant',icon:'i-growth',title:'Growth',lead:'Thank you for giving me opportunities to improve.',
+     body:'You gave me work that was a little bigger than I thought I could handle, then stayed close enough that I never felt alone. That is how I grew, one project at a time.'},
+    {key:'trophy',obj:'o-trophy',label:'Award',icon:'i-confidence',title:'Confidence',lead:'Thank you for trusting me with responsibilities.',
+     body:'When you trusted me with something that mattered, you taught me to trust myself. The confidence I have today started with the confidence you showed in me first.'},
+    {key:'lamp',obj:'o-lamp',label:'Desk lamp',icon:'i-inspiration',title:'Inspiration',lead:'Thank you for setting an example through your leadership.',
+     body:'The way you lead at '+COMPANY+', with calm, fairness, and care for people, is the example I carry with me. You showed me what good leadership looks like by living it daily.'}
+  ];
+  var WRONG={
+    1:'One? That was just my probation period, Boss.',
+    2:'Two? That is how long my first project took. Try again.',
+    3:'Three? Close. Round it up, like an appraisal rating.',
+    5:'Five? Generous, but let us not add a year to my experience yet.',
+    6:'Six? That is the number of meetings you have on a Monday.',
+    7:'Seven? Only if we count the lunch breaks separately.',
+    8:'Eight? Only if we count hours per day, not years.',
+    9:'Nine? Not yet, Boss. Give it time.',
+    10:'Ten? Someone is being optimistic about my retention plan.'
+  };
+  var seen={}, wrongCount=0;
+
+  function h(tag,attrs,children){
+    var el=document.createElement(tag);
+    if(attrs)for(var k in attrs){
+      if(k==='class')el.className=attrs[k];
+      else if(k==='html')el.innerHTML=attrs[k];
+      else if(k.indexOf('on')===0)el.addEventListener(k.slice(2),attrs[k]);
+      else el.setAttribute(k,attrs[k]);
+    }
+    (children||[]).forEach(function(c){ if(c==null)return; el.appendChild(typeof c==='string'?document.createTextNode(c):c); });
+    return el;
+  }
+  function svg(id){ return '<svg viewBox="0 0 48 48" aria-hidden="true"><use href="#'+id+'"/></svg>'; }
+  function show(el){
+    var old=stage.firstElementChild;
+    if(old){ old.classList.add('leaving'); setTimeout(function(){ stage.innerHTML=''; stage.appendChild(el); },300); }
+    else stage.appendChild(el);
+  }
+
+  /* ---- Desk illustration ---- */
+  function deskArt(){
+    var d=h('div',{class:'desk'});
+    d.innerHTML=
+    '<svg viewBox="0 0 440 330">'+
+    '<ellipse cx="220" cy="318" rx="210" ry="10" fill="rgba(95,125,91,.12)"/>'+
+    '<rect x="20" y="250" width="400" height="22" rx="8" fill="#D9C3A5"/><rect x="20" y="268" width="400" height="40" rx="8" fill="#C8AD88"/>'+
+    /* laptop */
+    '<path d="M130 160h130a8 8 0 0 1 8 8v78H122v-78a8 8 0 0 1 8-8z" fill="#E7DCC7" stroke="#B9996F" stroke-width="2"/>'+
+    '<rect x="132" y="170" width="126" height="66" rx="4" fill="#DDE8D8"/><text x="195" y="208" text-anchor="middle" font-family="Caveat, cursive" font-size="22" font-weight="700" fill="#5F7D5B">'+COMPANY+'</text>'+
+    '<path d="M108 246h174l10 8H98z" fill="#D9C3A5" stroke="#B9996F" stroke-width="2"/>'+
+    /* book stack */
+    '<g font-family="Nunito, sans-serif" font-size="10" font-weight="800" fill="#fff" text-anchor="middle">'+
+    '<rect x="296" y="226" width="116" height="24" rx="4" fill="#9DB89A"/><text x="354" y="242">TRUST</text>'+
+    '<rect x="300" y="202" width="112" height="24" rx="4" fill="#DB9A7E"/><text x="356" y="218">OPPORTUNITIES</text>'+
+    '<rect x="294" y="178" width="118" height="24" rx="4" fill="#B9996F"/><text x="353" y="194">SUPPORT</text>'+
+    '<rect x="298" y="154" width="114" height="24" rx="4" fill="#5F7D5B"/><text x="355" y="170">GUIDANCE</text></g>'+
+    /* frame */
+    '<rect x="318" y="60" width="90" height="86" rx="6" fill="#FBF7F0" stroke="#B9996F" stroke-width="4"/>'+
+    '<text class="quoteframe" x="363" y="88" text-anchor="middle" font-family="Caveat, cursive" font-size="17" font-weight="700" fill="#3E463B">Good leaders</text>'+
+    '<text x="363" y="108" text-anchor="middle" font-family="Caveat, cursive" font-size="17" font-weight="700" fill="#3E463B">create</text>'+
+    '<text x="363" y="128" text-anchor="middle" font-family="Caveat, cursive" font-size="17" font-weight="700" fill="#5F7D5B">great people</text>'+
+    /* plant */
+    '<path d="M40 250h52l-5 -46H45z" fill="#F4CBB8" stroke="#DB9A7E" stroke-width="2"/>'+
+    '<path d="M66 204c-30-4-40-30-36-56 22 4 36 28 36 56z" fill="#9DB89A"/><path d="M66 204c2-30 20-46 46-50-2 26-18 46-46 50z" fill="#5F7D5B"/><path d="M66 204c-6-22 0-40 14-52 8 18 4 40-14 52z" fill="#DDE8D8" stroke="#5F7D5B" stroke-width="1.5"/>'+
+    /* mug */
+    '<path d="M70 250h34v-26a4 4 0 0 0-4-4H74a4 4 0 0 0-4 4z" fill="#FBF7F0" stroke="#DB9A7E" stroke-width="2"/><path d="M104 228h5a6 6 0 0 1 0 12h-5" fill="none" stroke="#DB9A7E" stroke-width="2"/>'+
+    /* Pinesphere mark on the mug: pine tree inside a sphere */
+    '<circle cx="87" cy="235" r="9" fill="#5F7D5B"/><path d="M87 228.5l-4.5 7h3l-3 4.5h9l-3-4.5h3z" fill="#FBF7F0"/><rect x="86" y="239.5" width="2" height="2" fill="#FBF7F0"/>'+
+    /* notebook + pen */
+    '<rect x="20" y="236" width="56" height="14" rx="3" fill="#E7DCC7" stroke="#B9996F" stroke-width="2" transform="translate(-6 0)"/><path d="M18 232l40-10" stroke="#5F7D5B" stroke-width="3" stroke-linecap="round"/>'+
+    /* paper plane */
+    '<path d="M400 28l-50 22 20 8 6 18 10-14 16 4z" fill="#DDE8D8" stroke="#5F7D5B" stroke-width="2" stroke-linejoin="round"/><path d="M370 50l32-22" stroke="#5F7D5B" stroke-width="1.5"/>'+
+    '</svg>';
+    return d;
+  }
+
+  /* ---- Scene 1: Welcome ---- */
+  function welcome(){
+    return h('section',{class:'scene welcome'},[
+      h('div',{class:'text'},[
+        h('p',{class:'hand'},['Thank You']),
+        h('p',{class:'tag'},['for being an amazing Boss through my ',h('mark',null,[YEARS+' years']),' journey']),
+        h('p',{class:'sub'},['A small interactive thank-you, made for you. It takes two minutes and starts with one quick question.']),
+        h('button',{class:'btn peach',type:'button',onclick:function(){show(numberGame());}},['Continue →'])
+      ]),
+      deskArt()
+    ]);
+  }
+
+  /* ---- Scene 2: Number game ---- */
+  function numberGame(){
+    var reply=h('p',{class:'reply'},['Take a guess. One number holds the answer.']);
+    var grid=h('div',{class:'numbers',role:'group','aria-label':'Pick a number'});
+    var cont=h('button',{class:'btn',type:'button',onclick:function(){show(deskPicks());}},['Continue →']);
+    cont.hidden=true;
+    var done=false;
+    for(var n=1;n<=10;n++)(function(n){
+      var b=h('button',{type:'button',onclick:function(){
+        if(done)return;
+        if(n===YEARS){
+          done=true; b.classList.add('right'); b.classList.remove('hint');
+          grid.querySelectorAll('button').forEach(function(x){ if(x!==b){x.disabled=true;x.classList.remove('hint');} });
+          reply.className='reply ok';
+          reply.innerHTML='<span class="big">Yes, '+YEARS+' years!</span>'+(wrongCount?'Got there in the end. ':'First try. ')+'Four years of learning and growing under your guidance at '+COMPANY+'.';
+          confetti(90); cont.hidden=false;
+        }else{
+          wrongCount++;
+          b.classList.add('wrong'); setTimeout(function(){b.classList.remove('wrong');},450);
+          reply.className='reply';
+          reply.textContent=(WRONG[n]||'Nope.')+(wrongCount>=2?' Hint: it is the one glowing.':'');
+          if(wrongCount>=2)grid.querySelector('[data-n="'+YEARS+'"]').classList.add('hint');
+        }
+      },'data-n':n},[String(n)]);
+      grid.appendChild(b);
+    })(n);
+    return h('section',{class:'scene'},[
+      h('span',{class:'chip'},['A quick guess']),
+      h('p',{class:'hand',style:'font-size:clamp(2rem,5.5vh,3.2rem)'},['One number tells our story']),
+      h('p',{class:'q'},['Which number marks our journey together at '+COMPANY+'?']),
+      grid, reply, cont
+    ]);
+  }
+
+  /* ---- Scene 3: Desk picks ---- */
+  var picksEl=null;
+  function deskPicks(){
+    var grid=h('div',{class:'picks'});
+    grid.innerHTML='<svg class="path" viewBox="0 0 900 30" preserveAspectRatio="none"><path d="M0 22 C 110 -8, 200 36, 300 14 S 500 -6, 600 20 S 800 30, 900 8"/></svg>';
+    PICKS.forEach(function(p,i){
+      grid.appendChild(h('button',{class:'pick'+(seen[p.key]?' seen':''),type:'button','data-key':p.key,onclick:function(){openModal(i);}},[
+        h('span',{class:'obj',html:svg(p.obj)}), h('b',null,[p.label]), h('small',null,[seen[p.key]?'Opened':'Tap to open'])
+      ]));
+    });
+    var dots=h('span',{style:'display:inline-flex;gap:6px'},PICKS.map(function(p){return h('i',{class:seen[p.key]?'on':''});}));
+    var prog=h('div',{class:'progress'},[dots,h('span',{class:'ptxt'},[progressText()])]);
+    var cta=h('button',{class:'btn peach final',type:'button',onclick:function(){show(closingNote());}},['A closing note for you →']);
+    cta.hidden=!allSeen();
+    picksEl=h('section',{class:'scene'},[
+      h('span',{class:'chip'},['Your desk at ',h('b',null,[COMPANY])]),
+      h('p',{class:'hand',style:'font-size:clamp(2rem,5.5vh,3.2rem)'},['Every great leader has a desk']),
+      h('p',{class:'q'},['Which one would you reach for first? Each hides a reason I am grateful.']),
+      grid, prog, cta
+    ]);
+    return picksEl;
+  }
+  function allSeen(){ return PICKS.every(function(p){return seen[p.key];}); }
+  function progressText(){ var n=Object.keys(seen).length; return n===PICKS.length?'All five found':n+' of 5 found'; }
+  function refreshPicks(){
+    if(!picksEl)return;
+    PICKS.forEach(function(p,i){
+      var b=picksEl.querySelector('[data-key="'+p.key+'"]');
+      if(seen[p.key]){ b.classList.add('seen'); b.querySelector('small').textContent='Opened'; picksEl.querySelectorAll('.progress i')[i].classList.add('on'); }
+    });
+    picksEl.querySelector('.ptxt').textContent=progressText();
+    var cta=picksEl.querySelector('.final');
+    if(allSeen()&&cta.hidden){ cta.hidden=false; picksEl.querySelector('.progress').hidden=true; confetti(60); }
+  }
+
+  /* ---- Modal ---- */
+  function openModal(i){
+    var p=PICKS[i], modal;
+    function close(){ modal.classList.add('closing'); setTimeout(function(){modal.remove();},220); document.removeEventListener('keydown',esc); }
+    function esc(e){ if(e.key==='Escape')close(); }
+    var next=PICKS.filter(function(x){return !seen[x.key]&&x.key!==p.key;})[0];
+    var btns=h('div',{class:'btns'},[h('button',{class:'btn ghost',type:'button',onclick:close},['← Back to the desk'])]);
+    if(next)btns.appendChild(h('button',{class:'btn',type:'button',onclick:function(){close();setTimeout(function(){openModal(PICKS.indexOf(next));},240);}},['Open the '+next.label.toLowerCase()+' →']));
+    var sheet=h('div',{class:'sheet',role:'dialog','aria-modal':'true','aria-labelledby':'mtitle'},[
+      h('div',{class:'ico',html:svg(p.icon)}),
+      h('p',{class:'kicker'},['You picked the '+p.label.toLowerCase()]),
+      h('h3',{id:'mtitle'},[p.title]), h('p',{class:'lead'},[p.lead]), h('p',{class:'body'},[p.body]), btns
+    ]);
+    modal=h('div',{class:'modal',onclick:function(e){ if(e.target===modal)close(); }},[sheet]);
+    document.body.appendChild(modal);
+    document.addEventListener('keydown',esc);
+    sheet.querySelector('.btn').focus();
+    if(!seen[p.key]){ seen[p.key]=true; refreshPicks(); }
+  }
+
+  /* ---- Scene 4: Closing note ---- */
+  function closingNote(){
+    confetti(70);
+    return h('section',{class:'scene'},[
+      h('p',{class:'hand',style:'font-size:clamp(2rem,5.5vh,3.2rem)'},['A closing note of thanks']),
+      h('article',{class:'note'},[
+        h('div',{class:'stamp'},[YEARS+' years',h('br'),COMPANY]),
+        h('p',{class:'greet'},['Dear Suren Sir,']),
+        h('p',null,['Thank you for being a mentor as much as a boss. Over the past four years at Pinesphere, your guidance, patience, and trust have shaped the professional I am today. I am sincerely grateful for the knowledge you have shared, the opportunities you have entrusted to me, and the confidence you have helped me build. It has been a privilege to learn and grow under your leadership.']),
+        h('p',{class:'sign'},['With gratitude, always'])
+      ]),
+      h('p',{class:'closing'},['Grateful for these 4 years. Thank you for being an amazing mentor and leader.']),
+      h('div',{class:'btns'},[
+        h('button',{class:'btn ghost',type:'button',onclick:function(){show(deskPicks());}},['← Back to the desk']),
+        h('button',{class:'btn',type:'button',onclick:function(){seen={};wrongCount=0;picksEl=null;show(welcome());}},['↻ View it again'])
+      ])
+    ]);
+  }
+
+  /* ---- Confetti (paper squares, no hearts) ---- */
+  var confetti=(function(){
+    var cv=document.getElementById('confetti'),ctx=cv.getContext('2d'),W,H,parts=[],raf=null;
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function size(){W=cv.width=innerWidth*devicePixelRatio;H=cv.height=innerHeight*devicePixelRatio;}
+    addEventListener('resize',size);size();
+    var cols=['#9DB89A','#5F7D5B','#DB9A7E','#F4CBB8','#D9C3A5','#E3DDF2'];
+    function tick(){
+      ctx.clearRect(0,0,W,H);
+      for(var i=parts.length-1;i>=0;i--){var p=parts[i];p.vy+=0.12*devicePixelRatio;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.life--;
+        ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.globalAlpha=Math.min(1,p.life/30);ctx.fillStyle=p.c;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);ctx.restore();
+        if(p.life<=0||p.y>H+20)parts.splice(i,1);}
+      if(parts.length)raf=requestAnimationFrame(tick); else {raf=null;ctx.clearRect(0,0,W,H);}
+    }
+    return function(n){
+      if(reduce)return;
+      for(var i=0;i<n;i++){var a=-Math.PI/2+(Math.random()-.5)*1.6,v=(6+Math.random()*7)*devicePixelRatio;
+        parts.push({x:W/2+(Math.random()-.5)*W*.3,y:H*.55,vx:Math.cos(a)*v,vy:Math.sin(a)*v,r:Math.random()*6,vr:(Math.random()-.5)*.3,s:(6+Math.random()*8)*devicePixelRatio,c:cols[Math.floor(Math.random()*cols.length)],life:90+Math.random()*50});}
+      if(!raf)raf=requestAnimationFrame(tick);
+    };
+  })();
+
+  show(welcome());
+})();
+</script>
+
+</html>
