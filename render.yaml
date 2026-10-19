@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: surendiran-thankyou
+    name: pinesphere-thankyou
     runtime: static
     staticPublishPath: .
     buildCommand: ""
